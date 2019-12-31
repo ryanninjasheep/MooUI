@@ -15,7 +15,7 @@ namespace MooUI.Widgets
         {
             SetText(text);
         }
-        public TextBlock(string text) : base(text.Length, 1) { }
+        public TextBlock(string text) : this(text.Length, 1, text) { }
 
         public void SetText(string s)
         {

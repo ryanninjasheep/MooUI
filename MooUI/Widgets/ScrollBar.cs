@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MooUI.Widgets.Abstracts;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MooUI.Widgets
 {
-    class ScrollBar : Container
+    class ScrollBar : MonoContainer
     {
         public enum HoverRegion
         {
@@ -44,13 +45,52 @@ namespace MooUI.Widgets
             YGripSize = 0;
         }
 
+        private void Content_OnResize(object sender, EventArgs e)
+        {
+            CalculateScrollInfo();
+        }
+        public void CalculateScrollInfo()
+        {
+            YScrollBarVisible = (Content.Height > Height);
+            if (YScrollBarVisible)
+            {
+                YTrackSize = Height - 2;
+
+                float windowContentRatio = (float)Height / Content.Height;
+                YGripSize = (int)(YTrackSize * windowContentRatio);
+
+                if (YGripSize < 1)
+                    YGripSize = 1;
+                if (YGripSize > YTrackSize)
+                    YGripSize = YTrackSize;
+            }
+
+            XScrollBarVisible = (Content.Width > Width);
+            if (XScrollBarVisible)
+            {
+                XTrackSize = YScrollBarVisible ? Width - 3 : Width - 2;
+
+                float windowContentRatio = (float)Width / Content.Width;
+                XGripSize = (int)(XTrackSize * windowContentRatio);
+
+                if (XGripSize < 1)
+                    XGripSize = 1;
+                if (XGripSize > XTrackSize)
+                    XGripSize = XTrackSize;
+            }
+
+            RefreshStyle();
+        }
+
+        #region SCROLL
+
         public void ScrollX(int amount)
         {
             XStart += amount;
 
-            if (FocusedElement != null && XStart + Width > FocusedElement.Width)
+            if (Content != null && XStart + Width > Content.Width)
             {
-                XStart = FocusedElement.Width - Width;
+                XStart = Content.Width - Width;
             }
             if (XStart < 0)
             {
@@ -63,9 +103,9 @@ namespace MooUI.Widgets
         {
             YStart += amount;
 
-            if (FocusedElement != null && YStart + Height > FocusedElement.Height)
+            if (Content != null && YStart + Height > Content.Height)
             {
-                YStart = FocusedElement.Height - Height;
+                YStart = Content.Height - Height;
             }
             if (YStart < 0)
             {
@@ -76,12 +116,12 @@ namespace MooUI.Widgets
         }
         public void MaxScroll()
         {
-            XStart = FocusedElement.Width - Width;
+            XStart = Content.Width - Width;
             if (XStart < 0)
             {
                 XStart = 0;
             }
-            YStart = FocusedElement.Height - Height;
+            YStart = Content.Height - Height;
             if (YStart < 0)
             {
                 YStart = 0;
@@ -93,53 +133,14 @@ namespace MooUI.Widgets
             YStart = 0;
         }
 
-        private void Content_OnResize(object sender, EventArgs e)
-        {
-            CalculateScrollInfo();
-        }
-        public void CalculateScrollInfo()
-        {
-            YScrollBarVisible = (FocusedElement.Height > Height);
-            if (YScrollBarVisible)
-            {
-                YTrackSize = Height - 2;
-
-                float windowContentRatio = (float)Height / FocusedElement.Height;
-                YGripSize = (int)(YTrackSize * windowContentRatio);
-
-                if (YGripSize < 1)
-                    YGripSize = 1;
-                if (YGripSize > YTrackSize)
-                    YGripSize = YTrackSize;
-            }
-
-            XScrollBarVisible = (FocusedElement.Width > Width);
-            if (XScrollBarVisible)
-            {
-                XTrackSize = YScrollBarVisible? Width - 3 : Width - 2;
-
-                float windowContentRatio = (float)Width / FocusedElement.Width;
-                XGripSize = (int)(XTrackSize * windowContentRatio);
-
-                if (XGripSize < 1)
-                    XGripSize = 1;
-                if (XGripSize > XTrackSize)
-                    XGripSize = XTrackSize;
-            }
-
-            RefreshStyle();
-        }
+        #endregion
 
         #region CONTAINER
 
-        public void AddChild(MooWidget w)
+        public override void SetContent(MooWidget w)
         {
-            if (FocusedElement != null)
-            {
-                RemoveChild(FocusedElement);
-            }
-
-            FocusedElement = w;
+            Content?.SetParent(null);
+            Content = w;
             w.SetParent(this);
 
             w.OnResize += Content_OnResize; ;
@@ -151,34 +152,18 @@ namespace MooUI.Widgets
 
         public override void RemoveChild(MooWidget w)
         {
-            if(FocusedElement == w && FocusedElement != null)
+            if (Content == w && Content != null)
             {
-                FocusedElement.SetParent(null);
-                FocusedElement = null;
-
-                w.OnResize -= Content_OnResize;
+                Content.OnResize -= Content_OnResize;
+                Content.SetParent(null);
 
                 Render();
             }
         }
-        public override void Replace(MooWidget oldW, MooWidget newW)
-        {
-            RemoveChild(oldW);
-            AddChild(newW);
-        }
-        public override IEnumerable<MooWidget> GetChildren()
-        {
-            return new MooWidget[] { FocusedElement };
-        }
-
-        public override void RefreshStyle()
-        {
-            base.RefreshStyle();
-
-            FocusedElement?.SetStyle(Style, false);
-        }
 
         #endregion
+
+        #region RENDERING
 
         protected void DrawTrack()
         {
@@ -252,7 +237,7 @@ namespace MooUI.Widgets
         {
             if (XScrollBarVisible)
             {
-                int scrollAreaSize = FocusedElement.Width - Width;
+                int scrollAreaSize = Content.Width - Width;
                 float windowPositionRatio = (float)XStart / scrollAreaSize;
                 int trackScrollAreaSize = XTrackSize - XGripSize;
                 int gripPositionOnTrack = (int)(trackScrollAreaSize * windowPositionRatio);
@@ -261,7 +246,7 @@ namespace MooUI.Widgets
             }
             if (YScrollBarVisible)
             {
-                int scrollAreaSize = FocusedElement.Height - Height;
+                int scrollAreaSize = Content.Height - Height;
                 float windowPositionRatio = (float)YStart / scrollAreaSize;
                 int trackScrollAreaSize = YTrackSize - YGripSize;
                 int gripPositionOnTrack = (int)(trackScrollAreaSize * windowPositionRatio);
@@ -272,13 +257,15 @@ namespace MooUI.Widgets
 
         public override void Draw()
         {
-            if(FocusedElement != null)
+            if(Content != null)
             {
-                Visual.Merge(FocusedElement.Visual, 0, 0, XStart, YStart, Width, Height);
+                Visual.Merge(Content.Visual, 0, 0, XStart, YStart, Width, Height);
 
                 DrawTrack();
             }
         }
+
+        #endregion
 
         #region INPUT
 
@@ -288,12 +275,12 @@ namespace MooUI.Widgets
             {
                 if (r == HoverRegion.CONTENT)
                 {
-                    FocusedElement?.OnMouseEnter();
+                    Content?.OnMouseEnter();
                 }
                 else
                 {
                     if (Region == HoverRegion.CONTENT)
-                        FocusedElement?.OnMouseLeave();
+                        Content?.OnMouseLeave();
                 }
 
                 Region = r;
@@ -349,13 +336,16 @@ namespace MooUI.Widgets
             SetHoverRegion(HoverRegion.CONTENT);
         }
 
-        public override void OnMouseEnter() { }
+        public override void OnMouseEnter()
+        {
+            // This is empty so that the base isn't called - we don't want the content to automatically be notified
+        }
         public override void OnMouseLeave()
         {
             Region = HoverRegion.NONE;
             Render();
 
-            FocusedElement?.OnMouseLeave();
+            Content?.OnMouseLeave();
         }
 
         public override void OnLeftDown()
@@ -363,7 +353,7 @@ namespace MooUI.Widgets
             switch (Region)
             {
                 case HoverRegion.CONTENT:
-                    FocusedElement?.OnLeftDown();
+                    Content?.OnLeftDown();
                     break;
                 case HoverRegion.UP:
                     ScrollY(-1);

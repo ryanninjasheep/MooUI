@@ -40,7 +40,7 @@ namespace MooUI.Widgets
                             {
                                 ScrollBar t = new ScrollBar(MaxDisplayDimension, 2);
                                 Parent?.Replace(this, t);
-                                t.AddChild(this);
+                                t.SetContent(this);
                             }
                             
                         }
@@ -62,7 +62,7 @@ namespace MooUI.Widgets
                             {
                                 ScrollBar t = new ScrollBar(Width + 1, MaxDisplayDimension);
                                 Parent?.Replace(this, t);
-                                t.AddChild(this);
+                                t.SetContent(this);
                             }
 
                         }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MooUI.Widgets.Abstracts;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MooUI.Widgets
 {
-    class Accordion : Container
+    class Accordion : MultiContainer
     {
         protected List<MooWidget> Children { get; set; }
 
@@ -41,7 +42,7 @@ namespace MooUI.Widgets
                 AddChild(newW);
             }
         }
-        public override IEnumerable<MooWidget> GetChildren()
+        public override ICollection<MooWidget> GetChildren()
         {
             return Children;
         }

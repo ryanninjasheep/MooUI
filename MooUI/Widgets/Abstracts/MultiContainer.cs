@@ -2,31 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MooUI.Widgets
+namespace MooUI.Widgets.Abstracts
 {
-    public abstract class Container : MooWidget
+    /// <summary>
+    /// A MultiContainer leaves much implementation to derived classes, allowing them to store children in a variety of ways.
+    /// </summary>
+    public abstract class MultiContainer : Container
     {
         public MooWidget FocusedElement { get; protected set; }
 
-        public Container(int width, int height) : base(width, height) { }
+        public MultiContainer(int width, int height) : base(width, height) { }
 
-        public abstract void RemoveChild(MooWidget w);
-        public abstract void Replace(MooWidget oldW, MooWidget newW);
-        public abstract IEnumerable<MooWidget> GetChildren();
+        public abstract ICollection<MooWidget> GetChildren();
 
         public void SetFocus(MooWidget w)
         {
-            if (FocusedElement != w)
+            if (GetChildren().Contains(w) && FocusedElement != w)
             {
                 FocusedElement?.Unfocus();
                 FocusedElement = w;
-                FocusedElement?.Focus();
+                w.Focus();
             }
         }
 
         #region INPUT (DEFAULT)
 
-        public override void OnKeyDown() 
+        public override void OnKeyDown()
         {
             base.OnKeyDown();
 
@@ -39,7 +40,7 @@ namespace MooUI.Widgets
             FocusedElement?.OnKeyUp();
         }
 
-        public override void OnMouseMove(CellEventArgs e) 
+        public override void OnMouseMove(CellEventArgs e)
         {
             base.OnMouseMove(e);
 
@@ -59,13 +60,13 @@ namespace MooUI.Widgets
             FocusedElement?.OnMouseLeave();
         }
 
-        public override void OnLeftDown() 
+        public override void OnLeftDown()
         {
             base.OnLeftDown();
 
             FocusedElement?.OnLeftDown();
         }
-        public override void OnRightDown() 
+        public override void OnRightDown()
         {
             base.OnRightDown();
 
@@ -77,7 +78,7 @@ namespace MooUI.Widgets
 
             FocusedElement?.OnLeftUp();
         }
-        public override void OnRightUp() 
+        public override void OnRightUp()
         {
             base.OnRightUp();
 

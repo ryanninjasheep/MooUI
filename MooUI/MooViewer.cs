@@ -17,7 +17,7 @@ namespace MooUI
         private readonly double cellWidth = 7;
         private readonly double cellHeight = 15;
 
-        public MooWidget Content { get; set; }
+        public MooWindow Window { get; set; }
 
         // TODO: If MooViewer is resized, update content size
         private int MaxContentWidth { get; set; }
@@ -41,24 +41,25 @@ namespace MooUI
             Height = 500;
             UpdateSize();
 
-            Accordion a = new Accordion(MaxContentWidth, MaxContentHeight);
-            a.SetStyle(MooStyle.Test, false);
+            Window = new MooWindow(MaxContentWidth, MaxContentHeight);
+            Window.SetStyle(MooStyle.Test, false);
+            Window.OnRender += Content_Render;
 
-            ExpandingTextBox e = new ExpandingTextBox(10, 3, 5);
-            a.AddChild(e);
+            Accordion a = new Accordion(MaxContentWidth, MaxContentHeight);
+
+            // ExpandingTextBox still quite buggy
+            // a.AddChild(new ExpandingTextBox(10, 3, 5));
+
+            a.AddChild(new TextBox(30, 2, "Text Box"));
+            a.AddChild(new Button("Hello, button!"));
+            a.AddChild(new Checkbox("CHECK!"));
 
             SetContent(a);
         }
 
         public void SetContent(MooWidget w)
         {
-            if (Content != null)
-            {
-                Content.OnRender -= Content_Render;
-            }
-
-            Content = w;
-            Content.OnRender += Content_Render;
+            Window.SetContent(w);
         }
 
         #region RENDERING
@@ -72,33 +73,33 @@ namespace MooUI
             base.OnRender(dc);
 
             // Background
-            for (int j = 0; j < Content.Height; j++) // Go row by row
+            for (int j = 0; j < Window.Height; j++) // Go row by row
             {
                 int cursorX = 0;
-                for (int i = 0; i < Content.Width; i++)
+                for (int i = 0; i < Window.Width; i++)
                 {
-                    if (Content.Visual.BackColors[i, j] != Content.Visual.BackColors[cursorX, j])
+                    if (Window.Visual.BackColors[i, j] != Window.Visual.BackColors[cursorX, j])
                     {
                         DrawBackground(cursorX, j, i - cursorX, dc);
                         cursorX = i;
                     }
                 }
-                DrawBackground(cursorX, j, Content.Width - cursorX, dc);
+                DrawBackground(cursorX, j, Window.Width - cursorX, dc);
             }
 
             // Foreground
-            for (int j = 0; j < Content.Height; j++) // Go row by row
+            for (int j = 0; j < Window.Height; j++) // Go row by row
             {
                 int cursorX = 0;
-                for (int i = 0; i < Content.Width; i++)
+                for (int i = 0; i < Window.Width; i++)
                 {
-                    if (Content.Visual.ForeColors[i, j] != Content.Visual.ForeColors[cursorX, j])
+                    if (Window.Visual.ForeColors[i, j] != Window.Visual.ForeColors[cursorX, j])
                     {
                         DrawGlyphRun(cursorX, j, i - cursorX, dc);
                         cursorX = i;
                     }
                 }
-                DrawGlyphRun(cursorX, j, Content.Width - cursorX, dc);
+                DrawGlyphRun(cursorX, j, Window.Width - cursorX, dc);
             }
         }
         private void DrawGlyphRun(int xIndex, int yIndex, int length, DrawingContext dc) // Assumes all glyphs are the same color
@@ -106,7 +107,7 @@ namespace MooUI
             char[] chars = new char[length];
             for (int i = 0; i < length; i++)
             {
-                chars[i] = Content.Visual.Chars[xIndex + i, yIndex];
+                chars[i] = Window.Visual.Chars[xIndex + i, yIndex];
             }
 
             ushort[] charIndexes = new ushort[length];
@@ -129,11 +130,11 @@ namespace MooUI
             }
             isi.EndInit();
 
-            dc.DrawGlyphRun(new SolidColorBrush(Content.Visual.ForeColors[xIndex, yIndex]), g);
+            dc.DrawGlyphRun(new SolidColorBrush(Window.Visual.ForeColors[xIndex, yIndex]), g);
         }
         private void DrawBackground(int xIndex, int yIndex, int length, DrawingContext dc) // Assumes all same color
         {
-            dc.DrawRectangle(new SolidColorBrush(Content.Visual.BackColors[xIndex, yIndex]), null,
+            dc.DrawRectangle(new SolidColorBrush(Window.Visual.BackColors[xIndex, yIndex]), null,
                 new Rect(xIndex * cellWidth, yIndex * cellHeight, length * cellWidth + 1, cellHeight + 1));
         }
 
@@ -149,12 +150,12 @@ namespace MooUI
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
             KeyboardState.HandleKeyDown(e);
-            Content?.OnKeyDown();
+            Window.OnKeyDown();
         }
         protected void OnKeyUp(object sender, KeyEventArgs e)
         {
             KeyboardState.HandleKeyUp(e);
-            Content?.OnKeyUp();
+            Window.OnKeyUp();
         }
 
         CellEventArgs MouseLocation { get; set; }
@@ -173,7 +174,7 @@ namespace MooUI
 
             MouseLocation = GetCellAtMousePosition();
 
-            Content?.OnMouseMove(MouseLocation);
+            Window.OnMouseMove(MouseLocation);
 
         }
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -182,7 +183,7 @@ namespace MooUI
 
             MouseLocation = null;
 
-            Content?.OnMouseLeave();
+            Window.OnMouseLeave();
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -195,7 +196,7 @@ namespace MooUI
 
                 MouseLocation = c;
 
-                Content?.OnMouseMove(MouseLocation);
+                Window.OnMouseMove(MouseLocation);
             }
         }
 
@@ -203,20 +204,20 @@ namespace MooUI
         {
             base.OnMouseLeftButtonDown(e);
 
-            Content?.OnLeftDown();
+            Window.OnLeftDown();
         }
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
 
-            Content?.OnRightDown();
+            Window.OnRightDown();
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
 
-            Content?.OnMouseWheel(e.Delta);
+            Window.OnMouseWheel(e.Delta);
         }
 
         #endregion

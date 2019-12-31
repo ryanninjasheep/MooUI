@@ -9,7 +9,7 @@ namespace MooUI.Widgets
         public bool Checked { get; private set; }
         public string Text { get; private set; }
 
-        public Checkbox(int width, int height) : base(width, height)
+        private Checkbox(int width, int height) : base(width, height)
         {
             Checked = false; // default state
         }

@@ -32,7 +32,7 @@ namespace MooUI
             Visual.FillBackColor(Style.GetColor("DefaultBack"));
         }
 
-        public void SetParent(Container c)
+        internal void SetParent(Container c)
         {
             Parent?.RemoveChild(this);
             Parent = c;
@@ -85,15 +85,11 @@ namespace MooUI
 
         public virtual void Draw() { }
 
-        public event EventHandler OnRender;
         public void Render()
         {
             Draw();
 
             Parent?.Render();
-
-            EventHandler handler = OnRender;
-            handler?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
