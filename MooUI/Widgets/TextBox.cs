@@ -47,16 +47,13 @@ namespace MooUI.Widgets
         {
             base.OnKeyDown();
 
-            if (KeyboardState.KeyIsChar)
+            if (KeyboardState.KeyIsChar && Text.Length < Width * Height)
             {
                 SetText(Text + KeyboardState.GetCharInput(KeyboardState.LastKeyPressed));
             }
-            else
+            else if(KeyboardState.LastKeyPressed == System.Windows.Input.Key.Back && Text.Length > 0)
             {
-                if(KeyboardState.LastKeyPressed == System.Windows.Input.Key.Back && Text.Length > 0)
-                {
-                    SetText(Text.Substring(0, Text.Length - 1));
-                }
+                SetText(Text.Substring(0, Text.Length - 1));
             }
         }
 

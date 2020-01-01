@@ -19,11 +19,14 @@ namespace MooUI.Widgets
 
         public void SetText(string s)
         {
-            Text = s;
+            if (s.Length <= Width * Height)
+            {
+                Text = s;
 
-            Visual.SetText(Text);
+                Visual.SetText(Text);
 
-            Render();
+                Render();
+            }
         }
 
         public override void RefreshStyle()
