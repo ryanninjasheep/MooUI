@@ -14,6 +14,7 @@ namespace MooUI.Widgets.Abstracts
         public MultiContainer(int width, int height) : base(width, height) { }
 
         public abstract ICollection<MooWidget> GetChildren();
+        public abstract void RemoveChild(MooWidget w);
 
         public void SetFocus(MooWidget w)
         {

@@ -5,15 +5,15 @@ using System.Text;
 namespace MooUI.Widgets.Abstracts
 {
     /// <summary>
-    /// Can contain a single MooWidget.
+    /// A container that protects content from outside interaction.  Defaults to immediately delegating all input to child.
     /// </summary>
-    public abstract class MonoContainer : Container
+    public abstract class Delegator<T> : Container where T : MooWidget
     {
-        public MooWidget Content { get; protected set; }
+        protected T Content { get; set; }
 
-        public MonoContainer(int width, int height) : base(width, height) { }
+        public Delegator(int width, int height) : base(width, height) { }
 
-        public virtual void SetContent(MooWidget w)
+        protected virtual void SetContent(T w)
         {
             Content?.SetParent(null);
             Content = w;

@@ -19,7 +19,7 @@ namespace MooUI
         protected bool IsMouseOver { get; set; }
         protected bool IsFocused { get; set; }
 
-        public MooWidget(int width, int height)
+        protected MooWidget(int width, int height)
         {
             Style = new MooStyle();
             IsDefaultStyle = true;
@@ -34,7 +34,11 @@ namespace MooUI
 
         internal void SetParent(Container c)
         {
-            Parent?.RemoveChild(this);
+            if (Parent is Widgets.Abstracts.MultiContainer m)
+            {
+                m.RemoveChild(this);
+            }
+
             Parent = c;
 
             if (Parent != null)
