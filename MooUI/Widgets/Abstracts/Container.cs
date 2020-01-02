@@ -15,6 +15,5 @@ namespace MooUI.Widgets
         internal Container(int width, int height) : base(width, height) { }
 
         public abstract void RemoveChild(MooWidget w);
-        public abstract void Replace(MooWidget oldW, MooWidget newW);
     }
 }

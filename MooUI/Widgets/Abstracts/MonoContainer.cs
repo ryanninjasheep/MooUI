@@ -32,21 +32,6 @@ namespace MooUI.Widgets.Abstracts
                 Render();
             }
         }
-        public void RemoveChild()
-        {
-            if (Content != null)
-            {
-                RemoveChild(Content);
-            }
-        }
-
-        public override void Replace(MooWidget oldW, MooWidget newW)
-        {
-            if (oldW == Content)
-            {
-                SetContent(newW);
-            }
-        }
 
         public override void RefreshStyle()
         {

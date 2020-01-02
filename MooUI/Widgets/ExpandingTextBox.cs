@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,7 +9,7 @@ namespace MooUI.Widgets
         public bool ExpandRight { get; set; }
         public int MaxDisplayDimension { get; private set; }
 
-        public ExpandingTextBox(int width, int maxDisplayWidth) : base(width, 1) 
+        public ExpandingTextBox(int width, int maxDisplayWidth) : base(width, 1)
         {
             ExpandRight = true;
             MaxDisplayDimension = maxDisplayWidth;
@@ -42,7 +42,7 @@ namespace MooUI.Widgets
                                 Parent?.Replace(this, t);
                                 t.SetContent(this);
                             }
-                            
+
                         }
                     }
                 }
@@ -101,4 +101,4 @@ namespace MooUI.Widgets
             }
         }
     }
-}
+}*/

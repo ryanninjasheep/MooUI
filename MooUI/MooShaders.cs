@@ -10,7 +10,7 @@ namespace MooUI
         /// <summary>
         /// Factor < 1 darkens, > 1 lightens
         /// </summary>
-        public static Func<Color[,], int, int, Color> ChangeValue(float factor)
+        public static Func<Color[,], int, int, Color> Lighten(float factor)
         {
             if (factor < 0)
             {
@@ -31,6 +31,9 @@ namespace MooUI
             }
         }
 
+        /// <summary>
+        /// Fills with one color
+        /// </summary>
         public static Func<Color[,], int, int, Color> Fill(Color fill)
         {
             return (colors, x, y) =>

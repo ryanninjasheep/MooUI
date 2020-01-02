@@ -139,7 +139,9 @@ namespace MooUI.Widgets
 
         public override void SetContent(MooWidget w)
         {
+            Content.OnResize -= Content_OnResize;
             Content?.SetParent(null);
+
             Content = w;
             w.SetParent(this);
 

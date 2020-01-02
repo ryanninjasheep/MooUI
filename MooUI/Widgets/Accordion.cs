@@ -34,14 +34,6 @@ namespace MooUI.Widgets
                 Render();
             }
         }
-        public override void Replace(MooWidget oldW, MooWidget newW)
-        {
-            if (Children.Contains(oldW))
-            {
-                RemoveChild(oldW);
-                AddChild(newW);
-            }
-        }
         public override ICollection<MooWidget> GetChildren()
         {
             return Children;
