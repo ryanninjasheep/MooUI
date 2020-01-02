@@ -43,23 +43,11 @@ namespace MooUI
         }
         public void FillForeColor(Color fill, int xStart, int yStart, int width, int height)
         {
-            for (int i = xStart; i < Width && i - xStart < width; i++)
-            {
-                for (int j = yStart; j < Height && j - yStart < height; j++)
-                {
-                    ForeColors[i, j] = fill;
-                }
-            }
+            ApplyShader(MooShaders.Fill(fill), true, false, xStart, yStart, width, height);
         }
         public void FillBackColor(Color fill, int xStart, int yStart, int width, int height)
         {
-            for (int i = xStart; i < Width && i - xStart < width; i++)
-            {
-                for (int j = yStart; j < Height && j - yStart < height; j++)
-                {
-                    BackColors[i, j] = fill;
-                }
-            }
+            ApplyShader(MooShaders.Fill(fill), false, true, xStart, yStart, width, height);
         }
         public void FillChar(char fill, int xStart, int yStart, int width, int height)
         {
@@ -116,6 +104,28 @@ namespace MooUI
                     {
                         ForeColors[i + xIndex, j + yIndex] = v.ForeColors[i + xStart, j + yStart];
                         Chars[i + xIndex, j + yIndex] = v.Chars[i + xStart, j + yStart];
+                    }
+                }
+            }
+        }
+
+        public void ApplyShader(Func<Color[,], int, int, Color> shader, bool fore, bool back)
+        {
+            ApplyShader(shader, fore, back, 0, 0, Width, Height);
+        }
+        public void ApplyShader(Func<Color[,], int, int, Color> shader, bool fore, bool back, int xStart, int yStart, int width, int height)
+        {
+            for (int i = xStart; i < Width && i - xStart < width; i++)
+            {
+                for (int j = yStart; j < Height && j - yStart < height; j++)
+                {
+                    if (fore)
+                    {
+                        ForeColors[i, j] = shader(ForeColors, i, j);
+                    }
+                    if (back)
+                    {
+                        BackColors[i, j] = shader(BackColors, i, j);
                     }
                 }
             }
