@@ -47,9 +47,6 @@ namespace MooUI
 
             Accordion a = new Accordion(MaxContentWidth, MaxContentHeight);
 
-            // ExpandingTextBox still quite buggy
-            // a.AddChild(new ExpandingTextBox(10, 3, 5));
-
             a.AddChild(new TextBox(30, 2, "Text Box"));
             a.AddChild(new Button("Hello, button!"));
             a.AddChild(new Checkbox("CHECK!"));

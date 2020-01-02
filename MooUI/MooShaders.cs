@@ -10,7 +10,7 @@ namespace MooUI
         /// <summary>
         /// Factor < 1 darkens, > 1 lightens
         /// </summary>
-        public static Func<Color[,], int, int, Color> Lighten(float factor)
+        public static Func<Color[,], int, int, Color> Lighten(double factor)
         {
             if (factor < 0)
             {
@@ -22,9 +22,9 @@ namespace MooUI
                 {
                     Color c = colors[x, y];
 
-                    float r = ((c.R * factor) > 255) ? 255 : (c.R * factor);
-                    float g = ((c.G * factor) > 255) ? 255 : (c.G * factor);
-                    float b = ((c.B * factor) > 255) ? 255 : (c.B * factor);
+                    double r = ((c.R * factor) > 255) ? 255 : (c.R * factor);
+                    double g = ((c.G * factor) > 255) ? 255 : (c.G * factor);
+                    double b = ((c.B * factor) > 255) ? 255 : (c.B * factor);
 
                     return Color.FromRgb((byte)r, (byte)g, (byte)b);
                 };

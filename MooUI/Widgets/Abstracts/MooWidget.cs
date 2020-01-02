@@ -12,17 +12,17 @@ namespace MooUI
         public int Height { get => Visual.Height; }
 
         protected MooStyle Style { get; set; }
-        bool isDefaultStyle;
+        protected bool IsDefaultStyle { get; set; }
 
         protected Container Parent { get; set; }
 
-        public bool IsMouseOver { get; private set; }
-        public bool IsFocused { get; set; }
+        protected bool IsMouseOver { get; set; }
+        protected bool IsFocused { get; set; }
 
         public MooWidget(int width, int height)
         {
             Style = new MooStyle();
-            isDefaultStyle = true;
+            IsDefaultStyle = true;
 
             IsMouseOver = false;
             IsFocused = false;
@@ -55,17 +55,33 @@ namespace MooUI
             Render();
         }
 
+        public MooWindow FindWindow()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            else if (Parent is MooWindow m)
+            {
+                return m;
+            }
+            else
+            {
+                return Parent.FindWindow();
+            }
+        }
+
         #region STYLE
 
         public void SetStyle(MooStyle s, bool forceChange)
         {
-            if (isDefaultStyle || forceChange)
+            if (IsDefaultStyle || forceChange)
             {
                 Style = s;
 
                 if (forceChange)
                 {
-                    isDefaultStyle = false;
+                    IsDefaultStyle = false;
                 }
 
                 RefreshStyle();
@@ -101,11 +117,11 @@ namespace MooUI
 
         public virtual void OnMouseMove(CellEventArgs e) { }
 
-        public virtual void OnMouseEnter() 
+        public virtual void OnMouseEnter()
         {
             IsMouseOver = true;
         }
-        public virtual void OnMouseLeave() 
+        public virtual void OnMouseLeave()
         {
             IsMouseOver = false;
         }
@@ -123,7 +139,7 @@ namespace MooUI
                 return;
             IsFocused = true;
         }
-        public virtual void Unfocus() 
+        public virtual void Unfocus()
         {
             if (!IsFocused)
                 return;
