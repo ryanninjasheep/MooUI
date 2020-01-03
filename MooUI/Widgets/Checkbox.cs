@@ -50,6 +50,9 @@ namespace MooUI.Widgets
         public override void OnLeftDown()
         {
             base.OnLeftDown();
+
+            FindWindow().PushModal(new Alert(30, 10, "Checkbox clicked!"), 30, 10);
+
             if (Checked)
             {
                 Uncheck();

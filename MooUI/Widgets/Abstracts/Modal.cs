@@ -4,15 +4,15 @@ using System.Text;
 
 namespace MooUI.Widgets.Abstracts
 {
-    public abstract class Modal : MooWidget
+    public abstract class Modal : MonoContainer
     {
         public bool CanClickOutsideToClose { get; protected set; }
         public bool DarkenOutside { get; protected set; }
 
-        public Modal(int width, int height) : base(width, height)
+        public Modal(int width, int height, bool canClickOutsideToClose, bool darkenOutside) : base(width, height)
         {
-            CanClickOutsideToClose = true;
-            DarkenOutside = true;
+            CanClickOutsideToClose = canClickOutsideToClose;
+            DarkenOutside = darkenOutside;
         }
 
         public event EventHandler<Modal> OnClose;
@@ -22,6 +22,14 @@ namespace MooUI.Widgets.Abstracts
             handler?.Invoke(this, this);
 
             Render();
+        }
+
+        public override void Draw()
+        {
+            if (Content != null)
+            {
+                Visual.Merge(Content.Visual, 0, 0);
+            }
         }
     }
 }

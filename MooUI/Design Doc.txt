@@ -1,9 +1,6 @@
 ﻿TODO:
- - Design a variant of Container that protects its contents from direct interaction
- - MODALS
-    - Create an example modal and test behavior
- - Figure out ExpandingTextBox
  - Radio Buttons
  - ListBox
  - TreeBox
  - Dropdown Menu
+ - Grid

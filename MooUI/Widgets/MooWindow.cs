@@ -26,10 +26,9 @@ namespace MooUI.Widgets
 
             Modals.Add(new ModalWithLocation(m, x, y));
             m.OnClose += Modal_OnClose;
+            m.SetParent(this);
 
             UpdateActiveModal();
-
-            Render();
         }
 
         public void UpdateActiveModal()
@@ -127,7 +126,10 @@ namespace MooUI.Widgets
                 else
                 {
                     if (!IsModalHovered)
+                    {
+                        IsModalHovered = true;
                         ActiveModal.OnMouseEnter();
+                    }
 
                     ActiveModal.OnMouseMove(relativeCell);
                 }
