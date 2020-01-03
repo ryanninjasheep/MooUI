@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    class ScrollBar : MonoContainer
+    class ScrollBar<T> : Delegator<T> where T : MooWidget
     {
         public enum HoverRegion
         {
@@ -31,24 +31,15 @@ namespace MooUI.Widgets
         private int XGripSize { get; set; }
         private int YGripSize { get; set; }
 
-        public ScrollBar(int width, int height) : base(width, height)
+        public ScrollBar(int width, int height, T content) : base(width, height, content)
         {
             Region = HoverRegion.NONE;
 
-            XScrollBarVisible = false;
-            YScrollBarVisible = false;
-            XStart = 0;
-            YStart = 0;
-            XTrackSize = Width;
-            YTrackSize = Height;
-            XGripSize = 0;
-            YGripSize = 0;
-        }
-
-        private void Content_OnResize(object sender, EventArgs e)
-        {
             CalculateScrollInfo();
         }
+
+        #region SCROLL
+
         public void CalculateScrollInfo()
         {
             YScrollBarVisible = (Content.Height > Height);
@@ -81,8 +72,6 @@ namespace MooUI.Widgets
 
             RefreshStyle();
         }
-
-        #region SCROLL
 
         public void ScrollX(int amount)
         {
@@ -137,30 +126,28 @@ namespace MooUI.Widgets
 
         #region CONTAINER
 
-        public override void SetContent(MooWidget w)
+        protected override void SetContent(T w)
         {
-            Content.OnResize -= Content_OnResize;
-            Content?.SetParent(null);
+            if (Content != null)
+            {
+                Content.OnResize -= Content_OnResize;
+            }
 
-            Content = w;
-            w.SetParent(this);
+            base.SetContent(w);
 
-            w.OnResize += Content_OnResize; ;
-
-            CalculateScrollInfo();
+            w.OnResize += Content_OnResize;
 
             w.Render();
         }
 
-        public override void RemoveChild(MooWidget w)
+        private void Content_OnResize(object sender, EventArgs e)
         {
-            if (Content == w && Content != null)
-            {
-                Content.OnResize -= Content_OnResize;
-                Content.SetParent(null);
+            CalculateScrollInfo();
+        }
 
-                Render();
-            }
+        public T GetContent()
+        {
+            return Content;
         }
 
         #endregion
@@ -334,8 +321,16 @@ namespace MooUI.Widgets
                     return;
                 }
             }
-
-            SetHoverRegion(HoverRegion.CONTENT);
+            if (Content != null && e.X < Content.Width && e.Y < Content.Height)
+            {
+                SetHoverRegion(HoverRegion.CONTENT);
+                return;
+            }
+            else
+            {
+                SetHoverRegion(HoverRegion.NONE);
+                return;
+            }
         }
 
         public override void OnMouseEnter()

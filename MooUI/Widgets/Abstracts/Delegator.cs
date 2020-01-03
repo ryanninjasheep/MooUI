@@ -11,7 +11,10 @@ namespace MooUI.Widgets.Abstracts
     {
         protected T Content { get; set; }
 
-        public Delegator(int width, int height) : base(width, height) { }
+        public Delegator(int width, int height, T content) : base(width, height) 
+        {
+            SetContent(content);
+        }
 
         protected virtual void SetContent(T w)
         {
@@ -106,5 +109,13 @@ namespace MooUI.Widgets.Abstracts
         }
 
         #endregion
+
+        public override void Draw()
+        {
+            if (Content != null)
+            {
+                Visual.Merge(Content.Visual, 0, 0);
+            }
+        }
     }
 }

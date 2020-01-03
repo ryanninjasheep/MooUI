@@ -1,104 +1,68 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MooUI.Widgets
 {
-    class ExpandingTextBox : TextBox
+    class ExpandingTextBox : Abstracts.Delegator<ScrollBar<TextBox>>
     {
-        public bool ExpandRight { get; set; }
-        public int MaxDisplayDimension { get; private set; }
+        public enum ExpansionDirection { RIGHT, DOWN }
+        public ExpansionDirection Direction { get; private set; }
+        public int MinSize { get; private set; }
 
-        public ExpandingTextBox(int width, int maxDisplayWidth) : base(width, 1)
+        public string Text { get => TB.Text; }
+        public ScrollBar<TextBox> ScrollBar { get => Content; }
+        public TextBox TB { get => Content.GetContent(); }
+
+        public ExpandingTextBox(int displayWidth, int minWidth)
+            : base(displayWidth, 2, new ScrollBar<TextBox>(displayWidth, 2, new TextBox(minWidth, 1)))
         {
-            ExpandRight = true;
-            MaxDisplayDimension = maxDisplayWidth;
+            Direction = ExpansionDirection.RIGHT;
+            MinSize = minWidth;
         }
-        public ExpandingTextBox(int width, int height, int maxDisplayHeight) : base(width, height)
+        public ExpandingTextBox(int width, int displayHeight, int minHeight)
+            : base(width + 1, displayHeight, new ScrollBar<TextBox>(width + 1, displayHeight, new TextBox(width, minHeight)))
         {
-            ExpandRight = false;
-            MaxDisplayDimension = maxDisplayHeight;
+            Direction = ExpansionDirection.DOWN;
+            MinSize = minHeight;
         }
 
         public override void OnKeyDown()
         {
             if (KeyboardState.KeyIsChar)
             {
-                if (ExpandRight)
+                if (Direction == ExpansionDirection.RIGHT && Text.Length == TB.Width - 1)
                 {
-                    if (Text.Length == Width - 1)
-                    {
-                        Resize(Width + 1, 1);
+                    TB.Resize(TB.Width + 1, 1);
 
-                        if (Width >= MaxDisplayDimension)
-                        {
-                            if (Parent is ScrollBar s)
-                            {
-                                s.MaxScroll();
-                            }
-                            else
-                            {
-                                ScrollBar t = new ScrollBar(MaxDisplayDimension, 2);
-                                Parent?.Replace(this, t);
-                                t.SetContent(this);
-                            }
-
-                        }
-                    }
+                    ScrollBar.MaxScroll();
                 }
-                else
+                else if (Direction == ExpansionDirection.DOWN && (Text.Length + 1) >= TB.Width * TB.Height)
                 {
-                    if ((Text.Length + 1) % Width == 0)
-                    {
-                        Resize(Width, Height + 1);
+                    TB.Resize(TB.Width, TB.Height + 1);
 
-                        if (Height >= MaxDisplayDimension)
-                        {
-                            if (Parent is ScrollBar s)
-                            {
-                                s.MaxScroll();
-                            }
-                            else
-                            {
-                                ScrollBar t = new ScrollBar(Width + 1, MaxDisplayDimension);
-                                Parent?.Replace(this, t);
-                                t.SetContent(this);
-                            }
-
-                        }
-                    }
+                    ScrollBar.MaxScroll();
                 }
 
-                SetText(Text + KeyboardState.GetCharInput(KeyboardState.LastKeyPressed));
+                TB.SetText(Text + KeyboardState.GetCharInput(KeyboardState.LastKeyPressed));
             }
-            else
+            else if (KeyboardState.LastKeyPressed == System.Windows.Input.Key.Back && Text.Length > 0)
             {
-                if (KeyboardState.LastKeyPressed == System.Windows.Input.Key.Back && Text.Length > 0)
+                if (Direction == ExpansionDirection.RIGHT && TB.Width > MinSize)
                 {
-                    if (ExpandRight)
-                    {
-                        Resize(Width - 1, 1);
+                    TB.Resize(TB.Width - 1, 1);
 
-                        if (Parent is ScrollBar s)
-                        {
-                            s.MaxScroll();
-                        }
-                    }
-                    else
-                    {
-                        if (Text.Length % Width == 0)
-                        {
-                            Resize(Width, Height - 1);
-
-                            if (Parent is ScrollBar s)
-                            {
-                                s.MaxScroll();
-                            }
-                        }
-                    }
-                    SetText(Text.Substring(0, Text.Length - 1));
+                    ScrollBar.MaxScroll();
                 }
+                else if (Direction == ExpansionDirection.DOWN && Text.Length % TB.Width == 0 && TB.Height > MinSize)
+                {
+                    TB.Resize(TB.Width, TB.Height - 1);
+
+                    ScrollBar.MaxScroll();
+                }
+
+                TB.SetText(Text.Substring(0, Text.Length - 1));
             }
         }
     }
-}*/
+}
