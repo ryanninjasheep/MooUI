@@ -18,8 +18,6 @@ namespace MooUI.Widgets.Abstracts
             Content?.SetParent(null);
             Content = w;
             w.SetParent(this);
-
-            w.Render();
         }
 
         public override void RefreshStyle()

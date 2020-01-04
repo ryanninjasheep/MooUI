@@ -136,8 +136,6 @@ namespace MooUI.Widgets
             base.SetContent(w);
 
             w.OnResize += Content_OnResize;
-
-            w.Render();
         }
 
         private void Content_OnResize(object sender, EventArgs e)
@@ -339,10 +337,7 @@ namespace MooUI.Widgets
         }
         public override void OnMouseLeave()
         {
-            Region = HoverRegion.NONE;
-            Render();
-
-            Content?.OnMouseLeave();
+            SetHoverRegion(HoverRegion.NONE);
         }
 
         public override void OnLeftDown()

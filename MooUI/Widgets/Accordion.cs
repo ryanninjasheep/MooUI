@@ -22,7 +22,6 @@ namespace MooUI.Widgets
         {
             Children.Add(w);
             w.SetParent(this);
-            w.Render();
         }
         public override void RemoveChild(MooWidget w)
         {

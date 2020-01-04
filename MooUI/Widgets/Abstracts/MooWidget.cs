@@ -89,6 +89,7 @@ namespace MooUI
                 }
 
                 RefreshStyle();
+
                 Render();
             }
         }
