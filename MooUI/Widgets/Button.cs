@@ -5,7 +5,7 @@ using MooUI;
 
 namespace MooUI.Widgets
 {
-    class Button : TextBlock
+    public class Button : TextBlock
     {
         public Button(int width, int height, string text) : base(width, height, text) { }
         public Button(string text) : base(text) { }

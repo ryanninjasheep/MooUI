@@ -4,12 +4,11 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    public class Checkbox : MooWidget
+    public class Checkbox : Button
     {
         public bool Checked { get; private set; }
-        public string Text { get; private set; }
 
-        private Checkbox(int width, int height) : base(width, height)
+        private Checkbox(int width, int height) : base(width, height, "")
         {
             Checked = false; // default state
         }
@@ -18,11 +17,11 @@ namespace MooUI.Widgets
             SetText(text);
         }
 
-        public void SetText(string s)
+        public override void RefreshStyle()
         {
-            Text = s;
-            Render();
+            Visual.FillBackColor(Style.GetColor("DefaultBack"));
         }
+
         public void Check()
         {
             Checked = true;
@@ -50,8 +49,6 @@ namespace MooUI.Widgets
         public override void OnLeftDown()
         {
             base.OnLeftDown();
-
-            FindWindow().PushModal(new Alert(30, 10, "Checkbox clicked!"), 30, 10);
 
             if (Checked)
             {

@@ -11,7 +11,7 @@ namespace MooUI
         public int Width { get => Visual.Width; }
         public int Height { get => Visual.Height; }
 
-        protected MooStyle Style { get; set; }
+        public MooStyle Style { get; protected set; }
         protected bool IsDefaultStyle { get; set; }
 
         protected Container Parent { get; set; }

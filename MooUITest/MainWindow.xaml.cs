@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MooUI;
+using MooUI.Widgets;
 
 namespace MooUITest
 {
@@ -24,7 +25,16 @@ namespace MooUITest
         public MainWindow()
         {
             InitializeComponent();
-            Content = new MooViewer();
+            MooViewer m = new MooViewer();
+            Content = m;
+
+            Accordion a = new Accordion(m.MaxContentWidth, m.MaxContentHeight);
+            Checkbox c = new Checkbox("Checked!");
+
+            a.AddChild(new ExpandingTextBox(20, 5));
+            a.AddChild(c);
+
+            m.SetContent(a);
         }
     }
 }

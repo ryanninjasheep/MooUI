@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    class TextBox : TextBlock
+    public class TextBox : TextBlock
     {
         public string HintText { get; private set; }
 

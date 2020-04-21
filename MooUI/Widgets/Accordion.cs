@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    class Accordion : MultiContainer
+    public class Accordion : MultiContainer
     {
         protected List<MooWidget> Children { get; set; }
 

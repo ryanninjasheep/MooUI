@@ -19,9 +19,8 @@ namespace MooUI
 
         public MooWindow Window { get; set; }
 
-        // TODO: If MooViewer is resized, update content size
-        private int MaxContentWidth { get; set; }
-        private int MaxContentHeight { get; set; }
+        public int MaxContentWidth { get; private set; }
+        public int MaxContentHeight { get; private set; }
 
         public MooViewer()
         {
@@ -37,19 +36,13 @@ namespace MooUI
             EventManager.RegisterClassHandler(typeof(Window), Keyboard.KeyUpEvent, new KeyEventHandler(OnKeyUp), true);
 
             //TEMP
-            Width = 900;
-            Height = 500;
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Stretch;
             UpdateSize();
 
             Window = new MooWindow(MaxContentWidth, MaxContentHeight);
             Window.SetStyle(MooStyle.Test, false);
             Window.OnRender += Content_Render;
-
-            Accordion a = new Accordion(MaxContentWidth, MaxContentHeight);
-
-            a.AddChild(new ExpandingTextBox(20, 5));
-
-            SetContent(a);
         }
 
         public void SetContent(MooWidget w)
@@ -58,6 +51,7 @@ namespace MooUI
         }
 
         #region RENDERING
+
         private void Content_Render(object sender, EventArgs e)
         {
             InvalidateVisual();
@@ -66,6 +60,8 @@ namespace MooUI
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
+
+            dc.DrawRectangle(new SolidColorBrush(Window.Style.GetColor("DefaultBack")), null, new Rect(0, 0, Width, Height));
 
             // Background
             for (int j = 0; j < Window.Height; j++) // Go row by row
@@ -133,11 +129,24 @@ namespace MooUI
                 new Rect(xIndex * cellWidth, yIndex * cellHeight, length * cellWidth + 1, cellHeight + 1));
         }
 
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+
+            UpdateSize();
+        }
         public void UpdateSize()
         {
+            if (Parent == null)
+            {
+                Width = 900;
+                Height = 500;
+            }
+
             MaxContentWidth = (int)Math.Floor(Width / cellWidth);
             MaxContentHeight = (int)Math.Floor(Height / cellHeight);
         }
+
         #endregion
 
         #region INPUT HANDLING

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    class ExpandingTextBox : Abstracts.Delegator<ScrollBar<TextBox>>
+    public class ExpandingTextBox : Abstracts.Delegator<ScrollBar<TextBox>>
     {
         public enum ExpansionDirection { RIGHT, DOWN }
         public ExpansionDirection Direction { get; private set; }

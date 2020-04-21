@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    class ScrollBar<T> : Delegator<T> where T : MooWidget
+    public class ScrollBar<T> : Delegator<T> where T : MooWidget
     {
         public enum HoverRegion
         {

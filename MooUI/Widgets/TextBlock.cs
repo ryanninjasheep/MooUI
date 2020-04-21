@@ -7,7 +7,7 @@ namespace MooUI.Widgets
     /// <summary>
     /// A big old dumb box.  Can't do anything except display text.
     /// </summary>
-    class TextBlock : MooWidget
+    public class TextBlock : MooWidget
     {
         public string Text { get; set; }
 

@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace MooUI.Widgets
 {
-    class Spacer : MooWidget
+    public class Spacer : MooWidget
     {
         public Spacer(int width, int height) : base(width, height) 
         {

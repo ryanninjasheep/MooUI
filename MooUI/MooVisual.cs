@@ -29,6 +29,7 @@ namespace MooUI
         }
 
         #region HELPER FUNCTIONS
+
         public void FillForeColor(Color fill)
         {
             FillForeColor(fill, 0, 0, Width, Height);
@@ -130,6 +131,7 @@ namespace MooUI
                 }
             }
         }
+        
         #endregion
     }
 }

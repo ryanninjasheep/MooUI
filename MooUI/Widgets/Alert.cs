@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MooUI.Widgets
 {
-    class Alert : Abstracts.Modal
+    public class Alert : Abstracts.Modal
     {
         public Alert(int width, int height, string text) : base(width, height, false, true)
         {
